@@ -26,7 +26,7 @@ public class ScheduleController {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    // 1. Create
+    // 1. Create: 할 일 저장
     @PostMapping("/schedules")
     public ScheduleResponseDto createSchedule(@RequestBody ScheduleRequestDto requestDto) {
         Schedule schedule = new Schedule(requestDto);
@@ -59,5 +59,9 @@ public class ScheduleController {
 
         return scheduleResponseDto;
     }
+
+
+
+
 
 }
