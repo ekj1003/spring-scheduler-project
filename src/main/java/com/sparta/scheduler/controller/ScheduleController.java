@@ -4,6 +4,7 @@ package com.sparta.scheduler.controller;
 import com.sparta.scheduler.dto.ScheduleRequestDto;
 import com.sparta.scheduler.dto.ScheduleResponseDto;
 import com.sparta.scheduler.entity.Schedule;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -11,7 +12,10 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -59,7 +63,7 @@ public class ScheduleController {
 
 
 
-    // 2. 선택한 일정 조회(Read)
+    // 2. 선택한 일정 조회 - id (Read)
     @GetMapping("/schedules/{id}")
     public ScheduleResponseDto getMemos(@PathVariable Long id) {
         // DB 조회 (비밀번호 필드를 제외)
@@ -78,7 +82,60 @@ public class ScheduleController {
         });
     }
 
-//
+
+    // 3. 일정 목록 조회 - modifiedTime, manager (Read)
+    @GetMapping("/schedules")
+    public List<ScheduleResponseDto> getSchedule(
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate modifiedDate,
+            @RequestParam(required = false) String manager) {
+
+        // 기본 쿼리
+        StringBuilder sql = new StringBuilder("SELECT id, contents, manager, createTime, modifiedTime FROM schedule WHERE 1=1");
+
+        List<Object> params = new ArrayList<>();
+
+        // 수정일만 들어왔을 때
+        if (modifiedDate != null && manager == null) {
+            sql.append(" AND DATE(modifiedTime) = ?");
+            params.add(modifiedDate);
+        }
+
+        // 담당자만 들어왔을 때
+        else if(modifiedDate == null && manager != null) {
+            sql.append(" AND manager = ?");
+            params.add(manager);
+        }
+
+        // 수정일, 담당자 모두 들어왔을 때
+        else if (modifiedDate != null && manager != null) {
+            sql.append(" AND DATE(modifiedTime) = ?");
+            params.add(modifiedDate);
+            sql.append(" AND manager = ?");
+            params.add(manager);
+        }
+
+
+        // 정렬 수정일 기준 내림차순
+        sql.append(" ORDER BY modifiedTime DESC");
+
+        // 쿼리 실행
+        return jdbcTemplate.query(sql.toString(), params.toArray(), new RowMapper<ScheduleResponseDto>() {
+            @Override
+            public ScheduleResponseDto mapRow(ResultSet rs, int rowNum) throws SQLException {
+                Long id = rs.getLong("id");
+                String contents = rs.getString("contents");
+                String manager = rs.getString("manager");
+                LocalDateTime createTime = rs.getTimestamp("createTime").toLocalDateTime();
+                LocalDateTime modifiedTime = rs.getTimestamp("modifiedTime").toLocalDateTime();
+                return new ScheduleResponseDto(id, contents, manager, createTime, modifiedTime);
+            }
+        });
+    }
+
+
+
+
+
 //    private Schedule findById(Long id) {
 //        // DB 조회
 //        String sql = "SELECT * FROM schedule WHERE id = ?";
@@ -87,7 +144,7 @@ public class ScheduleController {
 //            if(resultSet.next()) {
 //                Schedule schedule = new Schedule();
 //                schedule.setUsername(resultSet.getString("username"));
-//                memo.setContents(resultSet.getString("contents"));
+//                schedule.setContents(resultSet.getString("contents"));
 //                return memo;
 //            } else {
 //                return null;
