@@ -132,25 +132,51 @@ public class ScheduleController {
         });
     }
 
+    // 4. 선택한 일정 수정 - contents, manager만 수정 가능(Update)
+    @PutMapping("/schedules/{id}/{password}")
+    public ScheduleResponseDto updateSchedule(@PathVariable Long id, @PathVariable String password, @RequestBody ScheduleRequestDto requestDto) {
+        // 해당 메모가 DB에 존재하는지 확인
+        Schedule schedule = findById(id);
+        if(schedule != null && (password.equals(schedule.getPassword()))) {
+            // memo 내용 수정
+            String sql = "UPDATE schedule SET contents = ?, manager = ?, modifiedTime = ? WHERE id = ?";
+            LocalDateTime now = LocalDateTime.now(); // 수정한 시간 현재 시간으로 설정
+            jdbcTemplate.update(sql, requestDto.getContents(), requestDto.getManager(), Timestamp.valueOf(now), id);
+
+            schedule.setId(id);
+            schedule.setContents(requestDto.getContents());
+            schedule.setManager(requestDto.getManager());
+            schedule.setModifiedTime(now);
+
+
+            return new ScheduleResponseDto(schedule);
+        } else {
+            throw new IllegalArgumentException("선택한 메모는 존재하지 않습니다.");
+        }
+    }
 
 
 
 
-//    private Schedule findById(Long id) {
-//        // DB 조회
-//        String sql = "SELECT * FROM schedule WHERE id = ?";
-//
-//        return jdbcTemplate.query(sql, resultSet -> {
-//            if(resultSet.next()) {
-//                Schedule schedule = new Schedule();
-//                schedule.setUsername(resultSet.getString("username"));
-//                schedule.setContents(resultSet.getString("contents"));
-//                return memo;
-//            } else {
-//                return null;
-//            }
-//        }, id);
-//    }
+
+    private Schedule findById(Long id) {
+        // DB 조회
+        String sql = "SELECT * FROM schedule WHERE id = ?";
+
+        return jdbcTemplate.query(sql, resultSet -> {
+            if(resultSet.next()) {
+                Schedule schedule = new Schedule();
+                schedule.setContents(resultSet.getString("contents"));
+                schedule.setManager(resultSet.getString("manager"));
+                schedule.setPassword(resultSet.getString("password"));
+                schedule.setCreateTime(resultSet.getTimestamp("createTime").toLocalDateTime());
+                schedule.setModifiedTime(resultSet.getTimestamp("modifiedTime").toLocalDateTime());
+                return schedule;
+            } else {
+                return null;
+            }
+        }, id);
+    }
 
 
 
