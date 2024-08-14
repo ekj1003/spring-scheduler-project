@@ -155,6 +155,23 @@ public class ScheduleController {
         }
     }
 
+    // 5. 선택한 일정 삭제 - id와 password (Delete)
+    @DeleteMapping("/schedules/{id}/{password}")
+    public Long deleteMemo(@PathVariable Long id, @PathVariable String password) {
+        // 해당 메모가 DB에 존재하는지 확인
+        Schedule schedule = findById(id);
+        if(schedule != null && (password.equals(schedule.getPassword()))) {
+            // schedule 삭제
+            String sql = "DELETE FROM schedule WHERE id = ?";
+            jdbcTemplate.update(sql, id);
+
+            return id;
+        } else {
+            throw new IllegalArgumentException("선택한 메모는 존재하지 않습니다.");
+        }
+    }
+
+
 
 
 
