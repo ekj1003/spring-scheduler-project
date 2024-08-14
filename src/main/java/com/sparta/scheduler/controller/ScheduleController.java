@@ -5,28 +5,25 @@ import com.sparta.scheduler.dto.ScheduleRequestDto;
 import com.sparta.scheduler.dto.ScheduleResponseDto;
 import com.sparta.scheduler.entity.Schedule;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.sql.PreparedStatement;
-import java.sql.Statement;
-import java.sql.Timestamp;
+import java.sql.*;
+import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/api")
 public class ScheduleController {
     //JDBC DB 생성
 
-    private JdbcTemplate jdbcTemplate = null;
+    private final JdbcTemplate jdbcTemplate;
     public ScheduleController(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    // 1. Create: 할 일 저장
+    // 1. 일정 작성(Create)
     @PostMapping("/schedules")
     public ScheduleResponseDto createSchedule(@RequestBody ScheduleRequestDto requestDto) {
         Schedule schedule = new Schedule(requestDto);
@@ -41,8 +38,8 @@ public class ScheduleController {
                     preparedStatement.setString(1, schedule.getContents());
                     preparedStatement.setString(2, schedule.getManager());
                     preparedStatement.setString(3, schedule.getPassword());
-                    // LocalDataTime 형 jdbc에 저장하는 방법
-                    // LocalDataTime -> Timestamp
+                    // LocalDateTime 형 jdbc에 저장하는 방법
+                    // LocalDateTime -> Timestamp
                     // Timestamp.valueOf(LocalDateTime 형) 사용
                     preparedStatement.setTimestamp(4, Timestamp.valueOf(schedule.getCreateTime()));
                     preparedStatement.setTimestamp(5, Timestamp.valueOf(schedule.getModifiedTime()));
@@ -59,6 +56,44 @@ public class ScheduleController {
 
         return scheduleResponseDto;
     }
+
+
+
+    // 2. 선택한 일정 조회(Read)
+    @GetMapping("/schedules/{id}")
+    public ScheduleResponseDto getMemos(@PathVariable Long id) {
+        // DB 조회 (비밀번호 필드를 제외)
+        String sql = "SELECT id, contents, manager, createTime, modifiedTime FROM schedule WHERE id = ?";
+
+        return jdbcTemplate.queryForObject(sql, new Object[]{id}, new RowMapper<ScheduleResponseDto>() {
+            @Override
+            public ScheduleResponseDto mapRow(ResultSet rs, int rowNum) throws SQLException {
+                Long scheduleId = rs.getLong("id");
+                String contents = rs.getString("contents");
+                String manager = rs.getString("manager");
+                LocalDateTime createTime = rs.getTimestamp("createTime").toLocalDateTime();
+                LocalDateTime modifiedTime = rs.getTimestamp("modifiedTime").toLocalDateTime();
+                return new ScheduleResponseDto(scheduleId, contents, manager, createTime, modifiedTime);
+            }
+        });
+    }
+
+//
+//    private Schedule findById(Long id) {
+//        // DB 조회
+//        String sql = "SELECT * FROM schedule WHERE id = ?";
+//
+//        return jdbcTemplate.query(sql, resultSet -> {
+//            if(resultSet.next()) {
+//                Schedule schedule = new Schedule();
+//                schedule.setUsername(resultSet.getString("username"));
+//                memo.setContents(resultSet.getString("contents"));
+//                return memo;
+//            } else {
+//                return null;
+//            }
+//        }, id);
+//    }
 
 
 
