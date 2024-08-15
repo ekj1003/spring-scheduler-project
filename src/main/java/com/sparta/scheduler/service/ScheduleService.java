@@ -3,6 +3,7 @@ package com.sparta.scheduler.service;
 import com.sparta.scheduler.dto.ScheduleRequestDto;
 import com.sparta.scheduler.dto.ScheduleResponseDto;
 import com.sparta.scheduler.entity.Schedule;
+import com.sparta.scheduler.repository.ScheduleRepository;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -22,31 +23,12 @@ public class ScheduleService {
 
 
     public ScheduleResponseDto createSchedule(ScheduleRequestDto requestDto) {
+
         Schedule schedule = new Schedule(requestDto);
 
         // DB 저장
-        KeyHolder keyHolder = new GeneratedKeyHolder(); // 기본 키를 반환받기 위한 객체
-        String sql = "INSERT INTO schedule (contents, manager, password, createTime, modifiedTime) VALUES (?, ?, ?, ?, ?)"; // 값은 동적이므로 ?, ?
-        jdbcTemplate.update(con -> {
-                    PreparedStatement preparedStatement = con.prepareStatement(sql,
-                            Statement.RETURN_GENERATED_KEYS);
-
-                    preparedStatement.setString(1, schedule.getContents());
-                    preparedStatement.setString(2, schedule.getManager());
-                    preparedStatement.setString(3, schedule.getPassword());
-                    // LocalDateTime 형 jdbc에 저장하는 방법
-                    // LocalDateTime -> Timestamp
-                    // Timestamp.valueOf(LocalDateTime 형) 사용
-                    preparedStatement.setTimestamp(4, Timestamp.valueOf(schedule.getCreateTime()));
-                    preparedStatement.setTimestamp(5, Timestamp.valueOf(schedule.getModifiedTime()));
-
-                    return preparedStatement;
-                },
-                keyHolder);
-
-        // DB Insert 후 받아온 키 확인
-        Long id = keyHolder.getKey().longValue();
-        schedule.setId(id);
+        ScheduleRepository scheduleRepository = new ScheduleRepository(jdbcTemplate);
+        Schedule saveSchedule = scheduleRepository.save(schedule);
 
         ScheduleResponseDto scheduleResponseDto = new ScheduleResponseDto(schedule);
 
@@ -55,81 +37,25 @@ public class ScheduleService {
 
     public ScheduleResponseDto getOneSchedule(Long id) {
         // DB 조회 (비밀번호 필드를 제외)
-        String sql = "SELECT id, contents, manager, createTime, modifiedTime FROM schedule WHERE id = ?";
-
-        return jdbcTemplate.queryForObject(sql, new Object[]{id}, new RowMapper<ScheduleResponseDto>() {
-            @Override
-            public ScheduleResponseDto mapRow(ResultSet rs, int rowNum) throws SQLException {
-                Long scheduleId = rs.getLong("id");
-                String contents = rs.getString("contents");
-                String manager = rs.getString("manager");
-                LocalDateTime createTime = rs.getTimestamp("createTime").toLocalDateTime();
-                LocalDateTime modifiedTime = rs.getTimestamp("modifiedTime").toLocalDateTime();
-                return new ScheduleResponseDto(scheduleId, contents, manager, createTime, modifiedTime);
-            }
-        });
+        ScheduleRepository scheduleRepository = new ScheduleRepository(jdbcTemplate);
+        return scheduleRepository.findOne(id);
     }
 
     public List<ScheduleResponseDto> getSchedules(LocalDate modifiedDate, String manager) {
-        // 기본 쿼리
-        StringBuilder sql = new StringBuilder("SELECT id, contents, manager, createTime, modifiedTime FROM schedule WHERE 1=1");
+        ScheduleRepository scheduleRepository = new ScheduleRepository(jdbcTemplate);
+        return scheduleRepository.findAll(modifiedDate, manager);
 
-        List<Object> params = new ArrayList<>();
-
-        // 수정일만 들어왔을 때
-        if (modifiedDate != null && manager == null) {
-            sql.append(" AND DATE(modifiedTime) = ?");
-            params.add(modifiedDate);
-        }
-
-        // 담당자만 들어왔을 때
-        else if(modifiedDate == null && manager != null) {
-            sql.append(" AND manager = ?");
-            params.add(manager);
-        }
-
-        // 수정일, 담당자 모두 들어왔을 때
-        else if (modifiedDate != null && manager != null) {
-            sql.append(" AND DATE(modifiedTime) = ?");
-            params.add(modifiedDate);
-            sql.append(" AND manager = ?");
-            params.add(manager);
-        }
-
-
-        // 정렬 수정일 기준 내림차순
-        sql.append(" ORDER BY modifiedTime DESC");
-
-        // 쿼리 실행
-        return jdbcTemplate.query(sql.toString(), params.toArray(), new RowMapper<ScheduleResponseDto>() {
-            @Override
-            public ScheduleResponseDto mapRow(ResultSet rs, int rowNum) throws SQLException {
-                Long id = rs.getLong("id");
-                String contents = rs.getString("contents");
-                String manager = rs.getString("manager");
-                LocalDateTime createTime = rs.getTimestamp("createTime").toLocalDateTime();
-                LocalDateTime modifiedTime = rs.getTimestamp("modifiedTime").toLocalDateTime();
-                return new ScheduleResponseDto(id, contents, manager, createTime, modifiedTime);
-            }
-        });
     }
 
 
     public ScheduleResponseDto updateSchedule(Long id, String password, ScheduleRequestDto requestDto) {
+        ScheduleRepository scheduleRepository = new ScheduleRepository(jdbcTemplate);
 
         // 해당 메모가 DB에 존재하는지 확인
-        Schedule schedule = findById(id);
+        Schedule schedule = scheduleRepository.findById(id);
         if(schedule != null && (password.equals(schedule.getPassword()))) {
             // memo 내용 수정
-            String sql = "UPDATE schedule SET contents = ?, manager = ?, modifiedTime = ? WHERE id = ?";
-            LocalDateTime now = LocalDateTime.now(); // 수정한 시간 현재 시간으로 설정
-            jdbcTemplate.update(sql, requestDto.getContents(), requestDto.getManager(), Timestamp.valueOf(now), id);
-
-            schedule.setId(id);
-            schedule.setContents(requestDto.getContents());
-            schedule.setManager(requestDto.getManager());
-            schedule.setModifiedTime(now);
-
+            schedule = scheduleRepository.update(id, requestDto, schedule);
 
             return new ScheduleResponseDto(schedule);
         } else {
@@ -138,12 +64,13 @@ public class ScheduleService {
     }
 
     public Long deleteSchedule(Long id, String password) {
+        ScheduleRepository scheduleRepository = new ScheduleRepository(jdbcTemplate);
+
         // 해당 메모가 DB에 존재하는지 확인
-        Schedule schedule = findById(id);
+        Schedule schedule = scheduleRepository.findById(id);
         if(schedule != null && (password.equals(schedule.getPassword()))) {
             // schedule 삭제
-            String sql = "DELETE FROM schedule WHERE id = ?";
-            jdbcTemplate.update(sql, id);
+            scheduleRepository.delete(id);
 
             return id;
         } else {
@@ -151,22 +78,5 @@ public class ScheduleService {
         }
     }
 
-    private Schedule findById(Long id) {
-        // DB 조회
-        String sql = "SELECT * FROM schedule WHERE id = ?";
 
-        return jdbcTemplate.query(sql, resultSet -> {
-            if(resultSet.next()) {
-                Schedule schedule = new Schedule();
-                schedule.setContents(resultSet.getString("contents"));
-                schedule.setManager(resultSet.getString("manager"));
-                schedule.setPassword(resultSet.getString("password"));
-                schedule.setCreateTime(resultSet.getTimestamp("createTime").toLocalDateTime());
-                schedule.setModifiedTime(resultSet.getTimestamp("modifiedTime").toLocalDateTime());
-                return schedule;
-            } else {
-                return null;
-            }
-        }, id);
-    }
 }

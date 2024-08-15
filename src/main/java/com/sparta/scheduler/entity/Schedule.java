@@ -33,4 +33,5 @@ public class Schedule {
     public void update(ScheduleRequestDto requestDto) {
         this.contents = requestDto.getContents();
     }
+
 }
