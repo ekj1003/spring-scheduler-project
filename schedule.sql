@@ -1,3 +1,4 @@
+/* schedule 생성 */
 create table schedule
 (
     id       bigint       not null auto_increment,
