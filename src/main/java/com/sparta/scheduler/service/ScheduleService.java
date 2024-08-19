@@ -8,6 +8,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Service;
 
 import java.sql.*;
 import java.time.LocalDate;
@@ -15,10 +16,11 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@Service
 public class ScheduleService {
     private final ScheduleRepository scheduleRepository;
-    public ScheduleService(JdbcTemplate jdbcTemplate) {
-        this.scheduleRepository = new ScheduleRepository(jdbcTemplate);
+    public ScheduleService(ScheduleRepository scheduleRepository) {
+        this.scheduleRepository = scheduleRepository;
     }
 
 

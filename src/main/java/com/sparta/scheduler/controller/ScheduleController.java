@@ -24,8 +24,8 @@ public class ScheduleController {
     //JDBC DB 생성
 
     private final ScheduleService scheduleService;
-    public ScheduleController(JdbcTemplate jdbcTemplate) {
-        this.scheduleService = new ScheduleService(jdbcTemplate);
+    public ScheduleController(ScheduleService scheduleService) {
+        this.scheduleService = scheduleService;
     }
 
     // 1. 일정 작성(Create)
