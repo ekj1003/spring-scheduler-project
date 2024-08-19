@@ -23,15 +23,14 @@ import java.util.List;
 public class ScheduleController {
     //JDBC DB 생성
 
-    private final JdbcTemplate jdbcTemplate;
+    private final ScheduleService scheduleService;
     public ScheduleController(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+        this.scheduleService = new ScheduleService(jdbcTemplate);
     }
 
     // 1. 일정 작성(Create)
     @PostMapping("/schedules")
     public ScheduleResponseDto createSchedule(@RequestBody ScheduleRequestDto requestDto) {
-        ScheduleService scheduleService = new ScheduleService(jdbcTemplate);
         return scheduleService.createSchedule(requestDto);
     }
 
@@ -40,7 +39,6 @@ public class ScheduleController {
     // 2. 선택한 일정 조회 - id (Read)
     @GetMapping("/schedules/{id}")
     public ScheduleResponseDto getOneSchedule(@PathVariable Long id) {
-        ScheduleService scheduleService = new ScheduleService(jdbcTemplate);
         return scheduleService.getOneSchedule(id);
 
     }
@@ -52,7 +50,6 @@ public class ScheduleController {
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate modifiedDate,
             @RequestParam(required = false) String manager) {
 
-        ScheduleService scheduleService = new ScheduleService(jdbcTemplate);
         return scheduleService.getSchedules(modifiedDate, manager);
 
     }
@@ -60,7 +57,6 @@ public class ScheduleController {
     // 4. 선택한 일정 수정 - contents, manager만 수정 가능(Update)
     @PutMapping("/schedules/{id}/{password}")
     public ScheduleResponseDto updateSchedule(@PathVariable Long id, @PathVariable String password, @RequestBody ScheduleRequestDto requestDto) {
-        ScheduleService scheduleService = new ScheduleService(jdbcTemplate);
         return scheduleService.updateSchedule(id, password,requestDto);
 
     }
@@ -68,7 +64,6 @@ public class ScheduleController {
     // 5. 선택한 일정 삭제 - id와 password (Delete)
     @DeleteMapping("/schedules/{id}/{password}")
     public Long deleteSchedule(@PathVariable Long id, @PathVariable String password) {
-        ScheduleService scheduleService = new ScheduleService(jdbcTemplate);
         return scheduleService.deleteSchedule(id, password);
     }
 

@@ -16,9 +16,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ScheduleService {
-    private final JdbcTemplate jdbcTemplate;
+    private final ScheduleRepository scheduleRepository;
     public ScheduleService(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+        this.scheduleRepository = new ScheduleRepository(jdbcTemplate);
     }
 
 
@@ -27,7 +27,6 @@ public class ScheduleService {
         Schedule schedule = new Schedule(requestDto);
 
         // DB 저장
-        ScheduleRepository scheduleRepository = new ScheduleRepository(jdbcTemplate);
         Schedule saveSchedule = scheduleRepository.save(schedule);
 
         ScheduleResponseDto scheduleResponseDto = new ScheduleResponseDto(schedule);
@@ -37,19 +36,16 @@ public class ScheduleService {
 
     public ScheduleResponseDto getOneSchedule(Long id) {
         // DB 조회 (비밀번호 필드를 제외)
-        ScheduleRepository scheduleRepository = new ScheduleRepository(jdbcTemplate);
         return scheduleRepository.findOne(id);
     }
 
     public List<ScheduleResponseDto> getSchedules(LocalDate modifiedDate, String manager) {
-        ScheduleRepository scheduleRepository = new ScheduleRepository(jdbcTemplate);
         return scheduleRepository.findAll(modifiedDate, manager);
 
     }
 
 
     public ScheduleResponseDto updateSchedule(Long id, String password, ScheduleRequestDto requestDto) {
-        ScheduleRepository scheduleRepository = new ScheduleRepository(jdbcTemplate);
 
         // 해당 메모가 DB에 존재하는지 확인
         Schedule schedule = scheduleRepository.findById(id);
@@ -64,7 +60,6 @@ public class ScheduleService {
     }
 
     public Long deleteSchedule(Long id, String password) {
-        ScheduleRepository scheduleRepository = new ScheduleRepository(jdbcTemplate);
 
         // 해당 메모가 DB에 존재하는지 확인
         Schedule schedule = scheduleRepository.findById(id);
