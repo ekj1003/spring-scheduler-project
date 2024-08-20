@@ -10,22 +10,15 @@ public class ScheduleResponseDto {
     private Long id;
     private String contents;
     private String manager;
-    private LocalDateTime createTime;
-    private LocalDateTime modifiedTime;
+    private LocalDateTime createDate;
+    private LocalDateTime modifiedDate;
 
     public ScheduleResponseDto (Schedule schedule) {
         this.id = schedule.getId();
         this.contents = schedule.getContents();
         this.manager = schedule.getManager();
-        this.createTime = schedule.getCreateTime();
-        this.modifiedTime = schedule.getModifiedTime();
+        this.createDate = schedule.getCreateDate();
+        this.modifiedDate = schedule.getModifiedDate();
     }
 
-    public ScheduleResponseDto(Long id, String contents, String manager, LocalDateTime createTime, LocalDateTime modifiedTime) {
-        this.id = id;
-        this.contents = contents;
-        this.manager = manager;
-        this.createTime = createTime;
-        this.modifiedTime = modifiedTime;
-    }
 }

@@ -3,19 +3,11 @@ package com.sparta.scheduler.controller;
 
 import com.sparta.scheduler.dto.ScheduleRequestDto;
 import com.sparta.scheduler.dto.ScheduleResponseDto;
-import com.sparta.scheduler.entity.Schedule;
 import com.sparta.scheduler.service.ScheduleService;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.*;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
