@@ -60,10 +60,10 @@ public class ScheduleService {
     @Transactional
     public ScheduleResponseDto updateSchedule(Long id, String password, ScheduleRequestDto requestDto) {
 
-        // 해당 메모가 DB에 존재하는지 확인
+        // 해당 스케줄이 DB에 존재하는지 확인
         Schedule schedule = findSchedule(id);
         if(password.equals(schedule.getPassword())) {
-            // memo 내용 수정
+            // schedule 내용 수정
             schedule.update(requestDto);
 
             return new ScheduleResponseDto(schedule);
@@ -75,7 +75,7 @@ public class ScheduleService {
 
     public Long deleteSchedule(Long id, String password) {
 
-        // 해당 메모가 DB에 존재하는지 확인
+        // 해당 스케줄이 DB에 존재하는지 확인
         Schedule schedule = findSchedule(id);
         if(password.equals(schedule.getPassword())) {
             // schedule 삭제
