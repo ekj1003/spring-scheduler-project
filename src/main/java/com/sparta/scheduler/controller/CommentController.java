@@ -40,4 +40,10 @@ public class CommentController {
         return commentService.updateComment(id, requestDto);
     }
 
+    // 2-4. 댓글 삭제
+    @DeleteMapping("/{id}")
+    public Long deleteSchedule(@PathVariable Long id) {
+        return commentService.deleteComment(id);
+    }
+
 }

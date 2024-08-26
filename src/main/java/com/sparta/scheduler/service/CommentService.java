@@ -47,24 +47,30 @@ public class CommentService {
 
     }
 
-
     // 2-2. 댓글 전체 조회
     public List<CommentResponseDto> getAllComments(Long scheduleId) {
         List<Comment> comments = commentRepository.findAllByScheduleId(scheduleId);
         return comments.stream().map(CommentResponseDto::new).toList();
     }
 
-    // 2-3. 댓글 수정
+    // 2-2. 댓글 수정
     public CommentResponseDto updateComment(Long id, CommentRequestDto requestDto) {
         Comment comment = findComment(id);
         comment.update(requestDto);
         return new CommentResponseDto(comment);
     }
 
+    // 2-2. 댓글 삭제
+    public Long deleteComment(Long id) {
+
+        Comment comment = findComment(id);
+        commentRepository.delete(comment);
+
+        return id;
+    }
+
     private Comment findComment(Long id) {
         return commentRepository.findById(id).orElseThrow(() ->
                 new IllegalArgumentException("선택한 댓글은 존재하지 않습니다."));
     }
-
-
 }
