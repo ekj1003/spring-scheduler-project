@@ -29,7 +29,7 @@ public class Comment extends Timestamped{
     private String comments;
 
 
-    // Schedule과 Comment 1:N 관계
+    // 2-1. Schedule과 Comment 1:N 관계
     @ManyToOne
     @JoinColumn(name = "schedule_id", insertable = false, updatable = false)
     private Schedule schedule;
