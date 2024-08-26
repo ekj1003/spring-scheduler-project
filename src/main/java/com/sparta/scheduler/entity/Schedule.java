@@ -30,7 +30,7 @@ public class Schedule extends Timestamped {
     private String contents;
 
     // 2-1. Schedule과 Comment 1:N 관계
-    @OneToMany(mappedBy = "schedule")
+    @OneToMany(mappedBy = "schedule",  cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private List<Comment> commentList = new ArrayList<>();
 
     public Schedule(ScheduleRequestDto requestDto) {
