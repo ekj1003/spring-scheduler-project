@@ -62,7 +62,7 @@ public class ScheduleService {
 
     private Schedule findSchedule(Long id) {
         return scheduleRepository.findById(id).orElseThrow(() ->
-                new IllegalArgumentException("선택한 메도는 존재하지 않습니다. "));
+                new IllegalArgumentException("선택한 할 일은 존재하지 않습니다. "));
     }
 
 //    public List<ScheduleResponseDto> getSchedules(LocalDate modifiedDate, String manager) {
