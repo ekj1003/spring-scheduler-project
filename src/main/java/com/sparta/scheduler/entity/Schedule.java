@@ -17,25 +17,30 @@ public class Schedule extends Timestamped {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name="writer", nullable = false)
+    private String writer;
+
+    @Column(name="title", nullable = false)
+    private String title;
+
     @Column(name="contents", nullable = false, length = 500)
     private String contents;
 
-    @Column(name="manager", nullable = false)
-    private String manager;
 
-    @Column(name="password", nullable = false, length = 200)
-    private String password;
+//    @Column(name="password", nullable = false, length = 200)
+//    private String password;
 
     public Schedule(ScheduleRequestDto requestDto) {
+        this.writer = requestDto.getWriter();
+        this.title = requestDto.getTitle();
         this.contents = requestDto.getContents();
-        this.manager = requestDto.getManager();
-        this.password = requestDto.getPassword();
     }
 
     // update 수정파트
     public void update(ScheduleRequestDto requestDto) {
+        this.writer = requestDto.getWriter();
+        this.title = requestDto.getTitle();
         this.contents = requestDto.getContents();
-        this.manager = requestDto.getManager();
     }
 
 }

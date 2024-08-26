@@ -36,27 +36,27 @@ public class ScheduleController {
     }
 
 
-    // 3. 일정 목록 조회 - modifiedTime, manager (Read)
-    @GetMapping("/schedules")
-    public List<ScheduleResponseDto> getSchedules(
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate modifiedDate,
-            @RequestParam(required = false) String manager) {
+//    // 3. 일정 목록 조회 - modifiedTime, manager (Read)
+//    @GetMapping("/schedules")
+//    public List<ScheduleResponseDto> getSchedules(
+//            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate modifiedDate,
+//            @RequestParam(required = false) String manager) {
+//
+//        return scheduleService.getSchedules(modifiedDate, manager);
+//
+//    }
 
-        return scheduleService.getSchedules(modifiedDate, manager);
+    // 4. 선택한 일정 수정 - writer, title, contents
+    @PutMapping("/schedules/{id}")
+    public ScheduleResponseDto updateSchedule(@PathVariable Long id, @RequestBody ScheduleRequestDto requestDto) {
+        return scheduleService.updateSchedule(id, requestDto);
 
     }
 
-    // 4. 선택한 일정 수정 - contents, manager만 수정 가능(Update)
-    @PutMapping("/schedules/{id}/{password}")
-    public ScheduleResponseDto updateSchedule(@PathVariable Long id, @PathVariable String password, @RequestBody ScheduleRequestDto requestDto) {
-        return scheduleService.updateSchedule(id, password,requestDto);
-
-    }
-
-    // 5. 선택한 일정 삭제 - id와 password (Delete)
-    @DeleteMapping("/schedules/{id}/{password}")
-    public Long deleteSchedule(@PathVariable Long id, @PathVariable String password) {
-        return scheduleService.deleteSchedule(id, password);
+    // 5. 선택한 일정 삭제 - id(Delete)
+    @DeleteMapping("/schedules/{id}")
+    public Long deleteSchedule(@PathVariable Long id) {
+        return scheduleService.deleteSchedule(id);
     }
 
 }
