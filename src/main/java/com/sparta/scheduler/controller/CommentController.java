@@ -5,6 +5,8 @@ import com.sparta.scheduler.dto.CommentResponseDto;
 import com.sparta.scheduler.service.CommentService;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/comments")
 public class CommentController {
@@ -24,6 +26,12 @@ public class CommentController {
     @GetMapping("/{id}")
     public CommentResponseDto getComment(@PathVariable Long id) {
         return commentService.getComment(id);
+    }
+
+    // 2-2. 댓글 전체 조회
+    @GetMapping("/schedule/{scheduleId}")
+    public List<CommentResponseDto> getAllComments(@PathVariable Long scheduleId) {
+        return commentService.getAllComments(scheduleId);
     }
 
 }

@@ -9,6 +9,7 @@ import com.sparta.scheduler.repository.ScheduleRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
@@ -47,4 +48,9 @@ public class CommentService {
     }
 
 
+    // 2-2. 댓글 전체 조회
+    public List<CommentResponseDto> getAllComments(Long scheduleId) {
+        List<Comment> comments = commentRepository.findAllByScheduleId(scheduleId);
+        return comments.stream().map(CommentResponseDto::new).toList();
+    }
 }
