@@ -31,7 +31,7 @@ public class Comment extends Timestamped{
 
     // 2-1. Schedule과 Comment 1:N 관계
     @ManyToOne
-    @JoinColumn(name = "schedule_id", insertable = false, updatable = false)
+    @JoinColumn(name = "schedule_id")
     private Schedule schedule;
 
 
