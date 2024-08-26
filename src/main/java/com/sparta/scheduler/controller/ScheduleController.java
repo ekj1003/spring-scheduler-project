@@ -4,11 +4,7 @@ package com.sparta.scheduler.controller;
 import com.sparta.scheduler.dto.ScheduleRequestDto;
 import com.sparta.scheduler.dto.ScheduleResponseDto;
 import com.sparta.scheduler.service.ScheduleService;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
-
-import java.time.LocalDate;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api")
