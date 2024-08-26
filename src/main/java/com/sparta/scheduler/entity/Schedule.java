@@ -29,6 +29,7 @@ public class Schedule extends Timestamped {
     @Column(name="contents", nullable = false, length = 500)
     private String contents;
 
+    // Schedule과 Comment 1:N 관계
     @OneToMany(mappedBy = "schedule")
     private List<Comment> commentList = new ArrayList<>();
 
