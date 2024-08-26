@@ -53,4 +53,18 @@ public class CommentService {
         List<Comment> comments = commentRepository.findAllByScheduleId(scheduleId);
         return comments.stream().map(CommentResponseDto::new).toList();
     }
+
+    // 2-3. 댓글 수정
+    public CommentResponseDto updateComment(Long id, CommentRequestDto requestDto) {
+        Comment comment = findComment(id);
+        comment.update(requestDto);
+        return new CommentResponseDto(comment);
+    }
+
+    private Comment findComment(Long id) {
+        return commentRepository.findById(id).orElseThrow(() ->
+                new IllegalArgumentException("선택한 댓글은 존재하지 않습니다."));
+    }
+
+
 }

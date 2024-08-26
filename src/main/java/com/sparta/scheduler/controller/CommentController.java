@@ -34,4 +34,10 @@ public class CommentController {
         return commentService.getAllComments(scheduleId);
     }
 
+    // 2-3. 댓글 수정
+    @PutMapping("/{id}")
+    public CommentResponseDto updateComment(@PathVariable Long id, @RequestBody CommentRequestDto requestDto) {
+        return commentService.updateComment(id, requestDto);
+    }
+
 }
