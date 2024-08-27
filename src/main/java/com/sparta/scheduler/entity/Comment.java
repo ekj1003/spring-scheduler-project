@@ -30,7 +30,7 @@ public class Comment extends Timestamped{
 
 
     // 2-1. Schedule과 Comment 1:N 관계
-    @ManyToOne
+    @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name = "schedule_id")
     private Schedule schedule;
 
