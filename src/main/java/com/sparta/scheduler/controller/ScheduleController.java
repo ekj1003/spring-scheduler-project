@@ -4,10 +4,13 @@ package com.sparta.scheduler.controller;
 import com.sparta.scheduler.dto.ScheduleRequestDto;
 import com.sparta.scheduler.dto.ScheduleResponseDto;
 import com.sparta.scheduler.service.ScheduleService;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/schedules")
 public class ScheduleController {
     //JDBC DB 생성
 
@@ -17,7 +20,7 @@ public class ScheduleController {
     }
 
     // 1. 일정 작성(Create)
-    @PostMapping("/schedules")
+    @PostMapping
     public ScheduleResponseDto createSchedule(@RequestBody ScheduleRequestDto requestDto) {
         return scheduleService.createSchedule(requestDto);
     }
@@ -25,10 +28,19 @@ public class ScheduleController {
 
 
     // 2. 선택한 일정 조회 - id (Read)
-    @GetMapping("/schedules/{id}")
+    @GetMapping("/{id}")
     public ScheduleResponseDto getOneSchedule(@PathVariable Long id) {
         return scheduleService.getOneSchedule(id);
 
+    }
+
+    // 3-1. 일정 페이징 조회
+    @GetMapping
+    public Page<ScheduleResponseDto> getSchedules(
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size) {
+
+        return scheduleService.getSchedules(page, size);
     }
 
 
@@ -43,14 +55,14 @@ public class ScheduleController {
 //    }
 
     // 4. 선택한 일정 수정 - writer, title, contents
-    @PutMapping("/schedules/{id}")
+    @PutMapping("/{id}")
     public ScheduleResponseDto updateSchedule(@PathVariable Long id, @RequestBody ScheduleRequestDto requestDto) {
         return scheduleService.updateSchedule(id, requestDto);
 
     }
 
     // 5. 선택한 일정 삭제 - id(Delete)
-    @DeleteMapping("/schedules/{id}")
+    @DeleteMapping("/{id}")
     public Long deleteSchedule(@PathVariable Long id) {
         return scheduleService.deleteSchedule(id);
     }

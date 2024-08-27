@@ -4,9 +4,14 @@ import com.sparta.scheduler.dto.ScheduleRequestDto;
 import com.sparta.scheduler.dto.ScheduleResponseDto;
 import com.sparta.scheduler.entity.Schedule;
 import com.sparta.scheduler.repository.ScheduleRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
@@ -58,6 +63,21 @@ public class ScheduleService {
         scheduleRepository.delete(schedule);
 
         return id;
+    }
+
+    // 3-1. 일정 페이징 조회
+    public Page<ScheduleResponseDto> getSchedules(int page, int size) {
+        Sort.Direction direction = Sort.Direction.DESC;
+        Sort sort = Sort.by(direction, "modifiedDate");
+        // 3-2. 수정일 기준 내림차순
+
+        Pageable pageable = PageRequest.of(page, size, sort);
+        Page<Schedule> scheduleList;
+
+        scheduleList = scheduleRepository.findAll(pageable);
+
+        return scheduleList.map(ScheduleResponseDto::new);
+
     }
 
     private Schedule findSchedule(Long id) {

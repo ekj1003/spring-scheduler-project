@@ -60,7 +60,7 @@ public class CommentService {
         return new CommentResponseDto(comment);
     }
 
-    // 2-2. 댓글 삭제
+    // 2-2 . 댓글 삭제
     public Long deleteComment(Long id) {
 
         Comment comment = findComment(id);
