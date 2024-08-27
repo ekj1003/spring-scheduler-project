@@ -48,5 +48,12 @@ public class UserController {
         return userService.deleteUser(id);
     }
 
+    // 5-3. 일정에 담당자 추가
+    @PostMapping("/{id}/schedules/{scheduleId}/assign")
+    public String assignUsersToSchedule(@PathVariable Long id, @PathVariable Long scheduleId, @RequestBody List<Long> managerUserList) {
+        userService.assignUsersToSchedule(id, scheduleId, managerUserList);
+        return "해당 유저들이 일정에 담당 유저로 저장되었습니다.";
+    }
+
 
 }

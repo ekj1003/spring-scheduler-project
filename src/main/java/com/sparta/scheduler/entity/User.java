@@ -30,8 +30,10 @@ public class User extends Timestamped{
     @OneToMany(mappedBy = "writer")
     private List<Schedule> scheduleList = new ArrayList<>();
 
-//    @OneToMany(mappedBy = "user")
-//    private List<ScheduleUser> ScheduleUserList = new ArrayList<>();
+    // 5-3. 중간 테이블(ScheduleUser) 담당자로 지정된 일정들
+    // 이 유저가 작성한 일정의 담당자들이 들어있음.
+    @OneToMany(mappedBy = "managerUser")
+    private List<ScheduleUser> managerUserAndScheduleList = new ArrayList<>();
 
 
     public User(UserRequestDto requestDto) {

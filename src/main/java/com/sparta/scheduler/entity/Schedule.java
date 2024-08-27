@@ -31,13 +31,15 @@ public class Schedule extends Timestamped {
     private List<Comment> commentList = new ArrayList<>();
 
 
+
     // 5-2. 일정 작성 유저명 필드 대신 유저 고유 식별자 필드
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User writer;
 
-//    @OneToMany(mappedBy = "schedule")
-//    private List<ScheduleUser> ScheduleUserList = new ArrayList<>();
+    // 5-3. 중간 테이블(ScheduleUser) 생성 For ManyToMany with User
+    @OneToMany(mappedBy = "schedule")
+    private List<ScheduleUser> managerUserAndScheduleList = new ArrayList<>();
 
 
     public Schedule(ScheduleRequestDto requestDto) {
