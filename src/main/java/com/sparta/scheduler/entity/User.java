@@ -6,6 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Getter
 @Setter
@@ -15,7 +18,7 @@ public class User extends Timestamped{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long id;    
 
     @Column(name = "name", nullable = false, length = 20)
     private String name;
@@ -23,11 +26,12 @@ public class User extends Timestamped{
     @Column(name = "email", nullable = false, length = 50)
     private String email;
 
-//    @OneToMany(mappedBy = "creator")
-//    private List<Schedule> createdSchedules = new ArrayList<>();
-//
+    // 5-2. 일정 작성 유저명 필드 대신 유저 고유 식별자 필드
+    @OneToMany(mappedBy = "writer")
+    private List<Schedule> scheduleList = new ArrayList<>();
+
 //    @OneToMany(mappedBy = "user")
-//    private List<ScheduleUser> assignedSchedules = new ArrayList<>();
+//    private List<ScheduleUser> ScheduleUserList = new ArrayList<>();
 
 
     public User(UserRequestDto requestDto) {

@@ -20,9 +20,6 @@ public class Schedule extends Timestamped {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name="writer", nullable = false, length = 20)
-    private String writer;
-
     @Column(name="title", nullable = false, length = 30)
     private String title;
 
@@ -33,15 +30,23 @@ public class Schedule extends Timestamped {
     @OneToMany(mappedBy = "schedule",  cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private List<Comment> commentList = new ArrayList<>();
 
+
+    // 5-2. 일정 작성 유저명 필드 대신 유저 고유 식별자 필드
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User writer;
+
+//    @OneToMany(mappedBy = "schedule")
+//    private List<ScheduleUser> ScheduleUserList = new ArrayList<>();
+
+
     public Schedule(ScheduleRequestDto requestDto) {
-        this.writer = requestDto.getWriter();
         this.title = requestDto.getTitle();
         this.contents = requestDto.getContents();
     }
 
     // update 수정파트
     public void update(ScheduleRequestDto requestDto) {
-        this.writer = requestDto.getWriter();
         this.title = requestDto.getTitle();
         this.contents = requestDto.getContents();
     }
