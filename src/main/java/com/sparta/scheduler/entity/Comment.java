@@ -1,7 +1,6 @@
 package com.sparta.scheduler.entity;
 
 import com.sparta.scheduler.dto.CommentRequestDto;
-import com.sparta.scheduler.dto.ScheduleRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,11 +20,11 @@ public class Comment extends Timestamped{
     private Long id;
 
     // 작성 유저명
-    @Column(name="writer", nullable = false)
+    @Column(name="writer", nullable = false, length = 20)
     private String writer;
 
     // 댓글 내용
-    @Column(name="comments", nullable = false, length = 500)
+    @Column(name="comments", nullable = false, length = 300)
     private String comments;
 
 

@@ -20,10 +20,10 @@ public class Schedule extends Timestamped {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name="writer", nullable = false)
+    @Column(name="writer", nullable = false, length = 20)
     private String writer;
 
-    @Column(name="title", nullable = false)
+    @Column(name="title", nullable = false, length = 30)
     private String title;
 
     @Column(name="contents", nullable = false, length = 500)
