@@ -18,9 +18,10 @@ public class ScheduleController {
     }
 
     // 1. 일정 작성(Create)
-    @PostMapping
-    public ScheduleResponseDto createSchedule(@RequestBody ScheduleRequestDto requestDto) {
-        return scheduleService.createSchedule(requestDto);
+    // 5-2. 일정 작성자 아이디 받아서, 유저 고유 식별자 필드를 가지도록.
+    @PostMapping("/{userId}")
+    public ScheduleResponseDto createSchedule(@PathVariable Long userId, @RequestBody ScheduleRequestDto requestDto) {
+        return scheduleService.createSchedule(userId, requestDto);
     }
 
 

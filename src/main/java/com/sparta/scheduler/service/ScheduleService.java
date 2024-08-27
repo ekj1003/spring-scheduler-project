@@ -3,7 +3,9 @@ package com.sparta.scheduler.service;
 import com.sparta.scheduler.dto.ScheduleRequestDto;
 import com.sparta.scheduler.dto.ScheduleResponseDto;
 import com.sparta.scheduler.entity.Schedule;
+import com.sparta.scheduler.entity.User;
 import com.sparta.scheduler.repository.ScheduleRepository;
+import com.sparta.scheduler.repository.UserRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -16,14 +18,21 @@ import java.util.NoSuchElementException;
 @Service
 public class ScheduleService {
     private final ScheduleRepository scheduleRepository;
-    public ScheduleService(ScheduleRepository scheduleRepository) {
+    private final UserRepository userRepository;
+    public ScheduleService(ScheduleRepository scheduleRepository, UserRepository userRepository) {
         this.scheduleRepository = scheduleRepository;
+        this.userRepository = userRepository;
     }
 
     // 1-1. 일정 저장
-    public ScheduleResponseDto createSchedule(ScheduleRequestDto requestDto) {
+    // 5-2. 일정 작성자 아이디 받아서, 유저 고유 식별자 필드를 가지도록.
+    public ScheduleResponseDto createSchedule(Long userId, ScheduleRequestDto requestDto) {
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> new IllegalArgumentException("해당 유저가 존재하지 않습니다.")
+        );
 
         Schedule schedule = new Schedule(requestDto);
+        schedule.setWriter(user);
 
         // DB 저장
         Schedule saveSchedule = scheduleRepository.save(schedule);

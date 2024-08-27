@@ -17,7 +17,7 @@ public class ScheduleResponseDto {
 
     public ScheduleResponseDto (Schedule schedule) {
         this.id = schedule.getId();
-        this.writer = schedule.getWriter();
+        this.writer = schedule.getWriter().getName(); // 일정을 생성한 유저의 이름
         this.title = schedule.getTitle();
         this.contents = schedule.getContents();
         this.commentCount = schedule.getCommentList().size();
