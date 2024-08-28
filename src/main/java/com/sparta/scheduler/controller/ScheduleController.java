@@ -1,6 +1,7 @@
 package com.sparta.scheduler.controller;
 
 
+import com.sparta.scheduler.dto.OneScheduleResponseDto;
 import com.sparta.scheduler.dto.ScheduleRequestDto;
 import com.sparta.scheduler.dto.ScheduleResponseDto;
 import com.sparta.scheduler.service.ScheduleService;
@@ -28,7 +29,7 @@ public class ScheduleController {
 
     // 2. 선택한 일정 조회 - id (Read)
     @GetMapping("/{id}")
-    public ScheduleResponseDto getOneSchedule(@PathVariable Long id) {
+    public OneScheduleResponseDto getOneSchedule(@PathVariable Long id) { // // 6-1. 일정 단건 조회 시 담당 유저들의 고유 식별자, 유저명, 이메일이 추가로 포함
         return scheduleService.getOneSchedule(id);
 
     }

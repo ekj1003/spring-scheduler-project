@@ -1,5 +1,6 @@
 package com.sparta.scheduler.service;
 
+import com.sparta.scheduler.dto.OneScheduleResponseDto;
 import com.sparta.scheduler.dto.ScheduleRequestDto;
 import com.sparta.scheduler.dto.ScheduleResponseDto;
 import com.sparta.scheduler.entity.Schedule;
@@ -43,12 +44,12 @@ public class ScheduleService {
     }
 
     // 1-1. 일정 단건 조회
-    public ScheduleResponseDto getOneSchedule(Long id) {
+    public OneScheduleResponseDto getOneSchedule(Long id) { // 6-1. 일정 단건 조회 시 담당 유저들의 고유 식별자, 유저명, 이메일이 추가로 포함
         // DB 조회 (비밀번호 필드를 제외)
         Schedule schedule = scheduleRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("해당하는 할 일이 존재하지 않습니다."));
 
-        return new ScheduleResponseDto(schedule);
+        return new OneScheduleResponseDto(schedule);
     }
 
 
