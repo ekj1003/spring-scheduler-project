@@ -1,5 +1,6 @@
 ### 1. API 명세서
 <img width="858" alt="스크린샷 2024-08-16 01 17 42" src="https://github.com/user-attachments/assets/34aeb6eb-7e9e-4efd-8e25-a6abe56ccb9c">
+
 ## 유저(User) 관련 API
 |기능|Method|URL|요청 Request|Response|
 |:---:|:---|:---|:---|:---|
