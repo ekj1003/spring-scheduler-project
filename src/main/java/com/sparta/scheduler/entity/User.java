@@ -40,9 +40,4 @@ public class User extends Timestamped{
         this.name = requestDto.getName();
         this.email = requestDto.getEmail();
     }
-
-    public void update(UserRequestDto requestDto) {
-        this.name = requestDto.getName();
-        this.email = requestDto.getEmail();
-    }
 }
