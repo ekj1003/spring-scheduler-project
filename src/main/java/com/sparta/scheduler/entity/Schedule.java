@@ -38,7 +38,8 @@ public class Schedule extends Timestamped {
     private User writer;
 
     // 5-3. 중간 테이블(ScheduleUser) 생성 For ManyToMany with User
-    @OneToMany(mappedBy = "schedule")
+    // 6-2. 지연 로딩
+    @OneToMany(mappedBy = "schedule", fetch = FetchType.LAZY)
     private List<ScheduleUser> managerUserAndScheduleList = new ArrayList<>();
 
 

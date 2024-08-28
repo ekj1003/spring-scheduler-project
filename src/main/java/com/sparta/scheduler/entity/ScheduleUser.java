@@ -15,11 +15,11 @@ public class ScheduleUser {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch=FetchType.LAZY) // 6-2. 지연 로딩 설정
     @JoinColumn(name = "schedule_id")
     private Schedule schedule;
 
-    @ManyToOne
+    @ManyToOne(fetch=FetchType.LAZY) // 6-2. 지연 로딩 설정
     @JoinColumn(name = "manager_user_id")
     private User managerUser;
 
