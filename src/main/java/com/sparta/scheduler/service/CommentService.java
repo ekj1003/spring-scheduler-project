@@ -54,6 +54,7 @@ public class CommentService {
     }
 
     // 2-2. 댓글 수정
+    @Transactional
     public CommentResponseDto updateComment(Long id, CommentRequestDto requestDto) {
         Comment comment = findComment(id);
         comment.update(requestDto);

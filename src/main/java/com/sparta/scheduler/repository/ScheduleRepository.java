@@ -5,7 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-// ScheduleRepository.java
 public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
     Optional<Schedule> findById(Long id);
 //    List<Schedule> findByWriter(String writer);

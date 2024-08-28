@@ -1,6 +1,5 @@
 package com.sparta.scheduler.dto;
 
-import com.sparta.scheduler.entity.Schedule;
 import com.sparta.scheduler.entity.User;
 import lombok.Getter;
 
